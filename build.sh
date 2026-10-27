@@ -36,7 +36,7 @@ PATCH_FILE="${SCRIPT_DIR}/0001-support-ohos.patch"
 # 下载链接（稳定，可复现）
 GHC_SRC_URL="https://downloads.haskell.org/~ghc/${GHC_VERSION}/ghc-${GHC_VERSION}-src.tar.xz"
 BOOT_GHC_URL="https://downloads.haskell.org/~ghc/${BOOT_GHC_VERSION}/ghc-${BOOT_GHC_VERSION}-x86_64-ubuntu20_04-linux.tar.xz"
-OHOS_SDK_URL="https://cidownload.openharmony.cn/version/Master_Version/OpenHarmony_6.1.0.31/20260311_020435/version-Master_Version-OpenHarmony_6.1.0.31-20260311_020435-ohos-sdk-full_6.1-Release.tar.gz"
+OHOS_SDK_URL="https://repo.huaweicloud.com/openharmony/os/7.0-Release/ohos-sdk-windows_linux-public_20260829.tar.gz"
 
 WORKDIR="${WORKDIR:-${SCRIPT_DIR}/ghc-ohos-work}"
 OHOS_SDK_DIR="${WORKDIR}/ohos-sdk"
@@ -108,7 +108,7 @@ phase_setup() {
 
   # --- OHOS SDK ---
   if [ ! -d "${OHOS_SDK_DIR}/linux/native/llvm/bin" ]; then
-    local sdk_tarball="${WORKDIR}/ohos-sdk-full.tar.gz"
+    local sdk_tarball="${WORKDIR}/ohos-sdk.tar.gz"
     if [ ! -f "$sdk_tarball" ]; then
       info "下载 OHOS SDK (较大，请耐心等待)..."
       curl -fSLo "$sdk_tarball" "$OHOS_SDK_URL"
@@ -117,6 +117,7 @@ phase_setup() {
     info "解压 OHOS SDK (linux/ 交叉编译部分)..."
     mkdir -p "${OHOS_SDK_DIR}/linux"
     tar -zxf "$sdk_tarball" -C "${OHOS_SDK_DIR}/linux" --strip-components=2 ohos-sdk/linux/
+    rm -rf "$sdk_tarball"
     cd "${OHOS_SDK_DIR}/linux"
     unzip -q native-*.zip
     rm -f *.zip
